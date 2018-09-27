@@ -1,21 +1,82 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package linearsorts;
 
+package linearsorts;
+import java.util.Random;
 /**
  *
- * @author paul5
+ * @author Paul Bosonetto
+ * CSCI 333 
+ * HW4 RAMSort&Select
+ * 2018.09.27
  */
 public class LinearSorts {
     
     
-    
-    private int[] randomizedQuickselect(int[] nums, int l, int r){
+    /**
+     * Finds the ith smallest value
+     * @param nums int array on which to operate
+     * @param p int starting index
+     * @param r int ending index
+     * @param i ith order statistic
+     * @return int representing the ith order statistic
+     */
+    private int randomizedQuickselect(int[] nums, int p, int r, int i){
         
         int[] copy = java.util.Arrays.copyOf(nums, nums.length);
+        
+        //base case
+        if (p == r)
+            return copy[p];
+        
+        //get a random pivot
+        Random rand = new Random();
+        int random = rand.nextInt(r-p) + p;
+        
+        //swap copy[random] with copy[r]
+        int temp = copy[random];
+        copy[random] = copy[r];
+        copy[r] = temp;
+        
+        
+        int pivot = partition(copy, p, r);
+        int k = pivot - p + 1; //calculate the order statistic k of the pivot
+        if (i == k)
+            return copy[pivot];
+        else if (i < k)
+            return randomizedQuickselect(copy, p, pivot-1, i);
+        else 
+            return randomizedQuickselect(copy, pivot+1, r, i-k);
+        
+        
+    }
+    
+    /**
+     * Method that partitions an int array based on the start and end parameters
+     * @param A int array to be sorted
+     * @param start starting index
+     * @param end ending index
+     * @return return the pivot index
+     */
+    private int partition(int[] A, int start, int end) {
+        
+        int x = A[end];
+        int i = start-1;
+        
+        for (int j = start; j < end; j++){
+            
+            if (A[j] <= x){ //swap A[i] with A[j]
+                i = i + 1;
+                
+                int temp = A[j];
+                A[j] = A[i];
+                A[i] = temp;
+            }
+        }
+        //swap A[i+1] with A[end]
+        int temp1 = A[i+1];
+        A[i+1] = A[end];
+        A[end] = temp1;
+        
+        return i + 1;
         
     }
     
@@ -123,8 +184,18 @@ public class LinearSorts {
         ls.printArray(ls.countingSort(nums5, nums55, ls.findMax(nums5)));
         System.out.println("-----------------------------------------");
         
-        
-        
+        System.out.print("The 8th order of nums3 is ");
+        System.out.println(ls.randomizedQuickselect(nums3, 0, nums3.length-1, 8));
+        System.out.print("The 4th order of nums3 is ");
+        System.out.println(ls.randomizedQuickselect(nums3, 0, nums3.length-1, 4));
+        System.out.print("The 1th order of nums3 is ");
+        System.out.println(ls.randomizedQuickselect(nums3, 0, nums3.length-1, 1));
+        System.out.print("The 1th order of nums1 is ");
+        System.out.println(ls.randomizedQuickselect(nums1, 0, nums1.length-1, 1));
+        System.out.print("The 5th order of nums1 is ");
+        System.out.println(ls.randomizedQuickselect(nums1, 0, nums1.length-1, 5));
+        System.out.print("The 2nd order of nums2 is ");
+        System.out.println(ls.randomizedQuickselect(nums2, 0, nums2.length-1, 2));
         
     }
     
